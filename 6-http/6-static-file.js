@@ -1,0 +1,71 @@
+const http = require("http");
+const fs = require("fs");
+const path = require("path");
+const URL = require("url");
+const qs = require("qs");
+
+const STATIC_DIR = "public"
+
+function initApp(req, res) {
+  const { pathname, query } = URL.parse(req.url);
+
+  req.query = qs.parse(query);
+  req.pathname = pathname;
+
+  res.json = (data) => {
+    res.setHeader("content-type", "application/json");
+    return res.end(JSON.stringify(data));
+  };
+}
+
+const server = http.createServer((req, res) => {
+  initApp(req, res);
+
+  const { pathname } = req;
+
+  if (pathname === "/") {
+    return res.end(fs.readFileSync(path.resolve(__dirname, "index.html")));
+  }
+
+  if (pathname === "/about") {
+    const filePath = path.resolve(__dirname, "about.html");
+    const data = fs.readFileSync(filePath);
+
+    console.log(data);
+
+    return res.end(data);
+  }
+  function staticServe(req, res) {
+    const filePath = path.resolve(__dirname, STATIC_DIR,...pathname.split("/"));
+
+    console.log(filePath);
+
+    if (fs.existsSync(filePath)) {
+      const data = fs.readFileSync(filePath);
+      res.end(data);
+
+      return true;
+    } else return false;
+  }
+
+  //   if (pathname === "/styles/main.css") {
+  //     return res.end(
+  //       fs.readFileSync(path.resolve(__dirname, "styles", "main.css")),
+  //     );
+  //   }
+  //     if (pathname === "/styles/header.css") {
+  //     return res.end(
+  //       fs.readFileSync(path.resolve(__dirname, "styles", "header.css")),
+  //     );
+  //   }
+  if (staticServe(req, res)) return;
+
+  res.statusCode = 404;
+  res.end("Page not found");
+});
+
+const port = 3333;
+
+server.listen(port, () => {
+  console.log(`Server is running on ${port}`);
+});
