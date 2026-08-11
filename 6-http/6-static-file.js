@@ -21,6 +21,8 @@ function initApp(req, res) {
 const server = http.createServer((req, res) => {
   initApp(req, res);
 
+
+  
   const { pathname } = req;
 
   if (pathname === "/") {
