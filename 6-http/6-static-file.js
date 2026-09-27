@@ -45,11 +45,9 @@ const server = http.createServer((req, res) => {
     if (fs.existsSync(filePath)) {
       const data = fs.readFileSync(filePath);
       res.end(data);
-
       return true;
     } else return false;
   }
-
   //   if (pathname === "/styles/main.css") {
   //     return res.end(
   //       fs.readFileSync(path.resolve(__dirname, "styles", "main.css")),
@@ -60,7 +58,7 @@ const server = http.createServer((req, res) => {
   //       fs.readFileSync(path.resolve(__dirname, "styles", "header.css")),
   //     );
   //   }
-  
+
   if (staticServe(req, res)) return;
 
   res.statusCode = 404;
