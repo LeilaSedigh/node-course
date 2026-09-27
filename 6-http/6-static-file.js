@@ -60,6 +60,7 @@ const server = http.createServer((req, res) => {
   //       fs.readFileSync(path.resolve(__dirname, "styles", "header.css")),
   //     );
   //   }
+  
   if (staticServe(req, res)) return;
 
   res.statusCode = 404;
